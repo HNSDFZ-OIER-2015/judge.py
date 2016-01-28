@@ -73,7 +73,7 @@ for i in range(startid, endid + 1):
     except:
         pass 
 
-    shutil.copy2('{}{}.in'.format(filename, i), '{}.in'.format(filename))
+    shutil.copy2('./{0}/{0}{1}.in'.format(filename, i), '{0}.in'.format(filename))
 
     # ......
     os.system('pkill -9 a.out')
@@ -105,7 +105,7 @@ for i in range(startid, endid + 1):
             flag = False
 
     if flag:
-        succeeded, lineNo, std, mine = diff('{}{}.out'.format(filename, i), '{}.out'.format(filename))
+        succeeded, lineNo, std, mine = diff('./{0}/{0}{1}.out'.format(filename, i), '{}.out'.format(filename))
         if not succeeded:
             print('Status: \033[31mWrong Answer\033[0m')
             
