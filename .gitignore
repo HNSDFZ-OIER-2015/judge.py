@@ -1,0 +1,14 @@
+# Python
+__pycache__/*
+*.pyo
+*.pyc
+
+# Input and output files
+*.in
+*.out
+*.ans
+
+# Judging files
+*.cpp
+*.c
+*.cxx
