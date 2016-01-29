@@ -112,28 +112,27 @@ for i in range(startid, endid + 1):
     # ......
     os.system('pkill -9 {}'.format(build_file))
 
-    starttime = time.time()
-
+    starttime = 0.0
     flag = True
 
     status = 0
+    proc = Popen(["./{}".format(build_file)])
+    pid = proc.pid
+    t = threading.Thread(target=memory_checker, args=(pid, timelimit))
+    t.start()
+
+    starttime = time.time()
     try:
-        with Popen(["./{}".format(build_file)]) as proc:
-            pid = proc.pid
-            t = threading.Thread(target=memory_checker, args=(pid, timelimit))
-            t.start()
-
             proc.wait(timeout = timelimit)
-
-            status = proc.returncode
-            t.join(timelimit)
-
     except subprocess.TimeoutExpired:
         if final_status == 'Accepted':
             final_status = 'Time Limit Exceeded'
         flag = False
-
     endtime = time.time()
+
+    status = proc.returncode
+    t.join(timelimit)
+
     passed = endtime - starttime
     print("Time:   {}s".format(passed))
     print("Memory: {}MB".format(float(memory_max) / (1024 * 1024)))
