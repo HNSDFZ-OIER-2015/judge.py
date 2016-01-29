@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 
 import os
+import sys
 import time
 import shutil
+import json
+import psutil
 import subprocess
 import readline
+import threading
 from subprocess import *
-
-COMPILE_COMMAND = 'g++ -std=c++11 -lpthread'
 
 def diff(file1, file2):
     f1 = open(file1)
@@ -32,29 +34,60 @@ def diff(file1, file2):
     return (True, 0, '', '')
 
 
+memory_max = 0
+
+
+def memory_checker(pid, time_limit):
+    global memory_max
+
+    time.sleep(0.001)
+    starttime = time.time()
+
+    try:
+        proc = psutil.Process(pid)
+    except:
+        return
+
+    memory_max = 0
+
+    while True:
+        endtime = time.time()
+
+        if endtime - starttime > timelimit:
+            return
+
+        try:
+            for i in range(0, 5):
+                rss, vms = proc.memory_info()
+                usage = rss + vms
+                memory_max = max(memory_max, usage)
+
+        except:
+            return
+
+        time.sleep(0.005)
+
+
 readline.parse_and_bind('tab: complete')
-filename = input("File Name: ")
-interval = input('Start/End: ')
-timelimit = input("Time Limit: ")
+setting = input("Problem Name: ")
+with open("./{0}/{0}.json".format(setting)) as setting_file:
+    document = json.load(setting_file)
 
-if filename.strip() == '':
-    print('(error) Filename can\'t be None.')
-    exit(-1)
+name          = document["name"]
+source_ext    = document["source_ext"]
+build_file    = document["build_file"]
+compiler      = document["compiler"]
+startid       = document["start_id"]
+endid         = document["end_id"]
+timelimit     = document["time_limit"]
+memlimit      = document["memory_limit"]
+formatter     = document["name_format"]
+special_judge = document["special_judge"]
 
-if interval.strip() == '':
-    interval = '1 10'
-
-if timelimit.strip() == '':
-    timelimit = '1.0'
-
-D = interval.split()
-startid = int(D[0])
-endid = int(D[1])
-
-timelimit = float(timelimit)
+spj = None
 
 print('(info) Compiling source...')
-status = os.system("{} {}.cpp".format(COMPILE_COMMAND, filename))
+status = os.system("{0} {1}{2} -o {3}".format(compiler, name, source_ext, build_file))
 
 if status != 0:
     print('\033[36mCompile Error\033[0m')
@@ -62,6 +95,7 @@ if status != 0:
 
 total_passed = 0
 total_time = 0.0
+max_memory = 0.0
 final_status = 'Accepted'
 
 for i in range(startid, endid + 1):
@@ -69,21 +103,31 @@ for i in range(startid, endid + 1):
 
     time.sleep(0.5)
     try:
-        os.remove('{}.out'.format(filename))
+        os.remove('{}.out'.format(name))
     except:
         pass 
 
-    shutil.copy2('./{0}/{0}{1}.in'.format(filename, i), '{0}.in'.format(filename))
+    shutil.copy2('./{0}/{1}'.format(name, formatter.format(name, i, "in")), '{0}.in'.format(name))
 
     # ......
-    os.system('pkill -9 a.out')
+    os.system('pkill -9 {}'.format(build_file))
 
     starttime = time.time()
 
     flag = True
 
+    status = 0
     try:
-        status = Popen(['./a.out']).wait(timeout = timelimit)
+        with Popen(["./{}".format(build_file)]) as proc:
+            pid = proc.pid
+            t = threading.Thread(target=memory_checker, args=(pid, timelimit))
+            t.start()
+
+            proc.wait(timeout = timelimit)
+
+            status = proc.returncode
+            t.join(timelimit)
+
     except subprocess.TimeoutExpired:
         if final_status == 'Accepted':
             final_status = 'Time Limit Exceeded'
@@ -92,6 +136,7 @@ for i in range(startid, endid + 1):
     endtime = time.time()
     passed = endtime - starttime
     print("Time:   {}s".format(passed))
+    print("Memory: {}MB".format(float(memory_max) / (1024 * 1024)))
 
     if not flag:        
         print('Status: \033[35mTime Limit Exceeded\033[0m')
@@ -105,38 +150,95 @@ for i in range(startid, endid + 1):
             flag = False
 
     if flag:
-        succeeded, lineNo, std, mine = diff('./{0}/{0}{1}.out'.format(filename, i), '{}.out'.format(filename))
-        if not succeeded:
-            print('Status: \033[31mWrong Answer\033[0m')
-            
-            if lineNo == 0:
-                print('(info) {}'.format(std))
-            else:
-                print('(info) At line {0}:\n\texpected: {1}\n\tbut read: {2}'.format(lineNo, std, mine))
-
+        if memory_max / (1024 ** 2) > memlimit:
+            print('Status: \033[36mMemory Limit Exceeded\033[0m')
+        
             if final_status == 'Accepted':
-                final_status = 'Wrong Answer'
+                final_status = 'Memory Limit Exceeded'
             flag = False
+
+    if flag:
+        if special_judge:
+            if spj is None:
+                sys.path.append("./{}/".format(name))
+                import spj
+
+            spj.init(
+                "./{0}/{1}".format(name, formatter.format(name, i, "in")),
+                "./{0}/{1}".format(name, formatter.format(name, i, "out")),
+                "{}.out".format(name)
+            )
+
+            spj.judge()
+            status = spj.status
+
+            if status != spj.ACCEPTED:
+                if status == spj.ERROR:
+                    print('Status: \033[31mJudgement Error\033[0m')
+
+                    if final_status == 'Accepted':
+                        final_status = 'Judgement Error'
+                    flag = False
+
+                elif status == spj.INTERNAL_ERROR:
+                    print('Status: \033[33mJudgement Failed\033[0m')
+
+                    if final_status == 'Accepted':
+                        final_status = 'Judgement Failed'
+                    flag = False
+
+                elif status == spj.UNKNOWN:
+                    print('Status: \033[36mUnknown Error\033[0m')
+
+                    if final_status == 'Accepted':
+                        final_status = 'Unknown Error'
+                    flag = False
+
+                if not flag:
+                    print("(info) {}".format(spj.message))
+
+        else:
+            succeeded, lineNo, std, mine = diff('./{0}/{1}'.format(
+                name, formatter.format(name, i, "out")),
+                '{}.out'.format(name)
+            )
+            if not succeeded:
+                print('Status: \033[31mWrong Answer\033[0m')
+                
+                if lineNo == 0:
+                    print('(info) {}'.format(std))
+                else:
+                    print('(info) At line {0}:\n\texpected: {1}\n\tbut read: {2}'.format(lineNo, std, mine))
+
+                if final_status == 'Accepted':
+                    final_status = 'Wrong Answer'
+                flag = False
 
     if flag:
         print('Status: \033[34mAccepted\033[0m')
         total_passed += 1
 
     total_time += passed
+    memory_max = max(memory_max, max_memory)
 
 color_table = {
     'Accepted': '\033[34m',
     'Wrong Answer': '\033[31m',
     'Time Limit Exceeded': '\033[35m',
-    'Runtime Error': '\033[33m'
+    "Memory Limit Exceeded": "\033[36m",
+    'Runtime Error': '\033[33m',
+    "Judgement Error": "\033[31m",
+    "Judgement Failed": "\033[33m",
+    "Unknown Error": "\033[36m"
 }
 
 print('\n\033[32m### ANALYZE ###\033[0m')
-print('Status: {}{}\033[0m\nScores: {}\nTime:   {}s'.format(
+print('Status: {}{}\033[0m\nScores: {}\nTime:   {}s\nMemory: {}MB'.format(
     color_table[final_status],
     final_status,
     100.0 * (float(total_passed) / (endid - startid + 1)),
-    total_time
+    total_time,
+    float(memory_max) / (1024 ** 2)
     )
 )
 

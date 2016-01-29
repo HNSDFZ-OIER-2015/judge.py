@@ -12,3 +12,7 @@ __pycache__/*
 *.cpp
 *.c
 *.cxx
+
+*.md
+*.txt
+*.json
