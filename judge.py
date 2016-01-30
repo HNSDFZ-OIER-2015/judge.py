@@ -69,7 +69,40 @@ def memory_checker(pid, time_limit):
 
 
 readline.parse_and_bind('tab: complete')
-setting = input("Problem Name: ")
+# setting = input("Problem Name: ")
+if len(sys.argv) < 2:
+    print("(error) No problem specified.")
+    exit(-1)
+
+if sys.argv[1] == "generate":
+    if len(sys.argv) < 3:
+        print("(error) Problem name not specified.")
+        exit(-1)
+
+    name = sys.argv[2]
+    try:
+        os.mkdir(name)
+    except:
+        pass
+    config = open("{0}/{0}.json".format(name), "w")
+    content = '''{
+    "name": "%s",
+    "source_ext": ".cpp",
+    "build_file": "a.out",
+    "compiler": "g++ -O0 -std=c++11",
+    "start_id": 1,
+    "end_id": 10,
+    "name_format": "{0}{1}.{2}",
+    "time_limit": 1.0,
+    "memory_limit": 128.0,
+    "special_judge": false
+}'''
+    config.write(content % name)
+    config.close()
+    exit(0)
+
+setting = sys.argv[1]
+
 with open("./{0}/{0}.json".format(setting)) as setting_file:
     document = json.load(setting_file)
 
