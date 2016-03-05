@@ -11,25 +11,33 @@ import readline
 import threading
 from subprocess import *
 
+is_datagen = False
+
 def diff(file1, file2):
-    f1 = open(file1)
-    f2 = open(file2)
+    global is_datagen
 
-    lineNumber = 0
-    L1 = [x for x in f1.readlines() if x.strip() != '']
-    L2 = [x for x in f2.readlines() if x.strip() != '']
-    f1.close()
-    f2.close()
+    if not is_datagen:
+        f1 = open(file1)
+        f2 = open(file2)
 
-    if len(L1) != len(L2):
-        return (False, 0, 'Incorrect file size', 'Incorrect file size')
+        lineNumber = 0
+        L1 = [x for x in f1.readlines() if x.strip() != '']
+        L2 = [x for x in f2.readlines() if x.strip() != '']
+        f1.close()
+        f2.close()
 
-    for index in range(0, len(L2)):
-        lineNumber += 1
-        # print(L1[index], L2[index])
+        if len(L1) != len(L2):
+            return (False, 0, 'Incorrect file size', 'Incorrect file size')
 
-        if L1[index].strip() != L2[index].strip():
-            return (False, lineNumber, L1[index].strip(), L2[index].strip())
+        for index in range(0, len(L2)):
+            lineNumber += 1
+            # print(L1[index], L2[index])
+
+            if L1[index].strip() != L2[index].strip():
+                return (False, lineNumber, L1[index].strip(), L2[index].strip())
+
+    if is_datagen:
+        shutil.copy2(file2, file1)
 
     return (True, 0, '', '')
 
@@ -74,6 +82,8 @@ if len(sys.argv) < 2:
     print("(error) No problem specified.")
     exit(-1)
 
+setting = ""
+
 if sys.argv[1] == "generate":
     if len(sys.argv) < 3:
         print("(error) Problem name not specified.")
@@ -101,7 +111,12 @@ if sys.argv[1] == "generate":
     config.close()
     exit(0)
 
-setting = sys.argv[1]
+elif sys.argv[1] == "datagen":
+    is_datagen = True
+    setting = sys.argv[2]
+
+else:
+    setting = sys.argv[1]
 
 with open("./{0}/{0}.json".format(setting)) as setting_file:
     document = json.load(setting_file)
