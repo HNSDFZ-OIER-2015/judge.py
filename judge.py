@@ -149,7 +149,7 @@ final_status = 'Accepted'
 for i in range(startid, endid + 1):
     print('\n\033[32m# Testcase\033[0m {}'.format(i))
 
-    time.sleep(0.5)
+    time.sleep(0.1)
     try:
         os.remove('{}.out'.format(name))
     except:
@@ -171,7 +171,7 @@ for i in range(startid, endid + 1):
 
     starttime = time.time()
     try:
-            proc.wait(timeout = timelimit)
+        proc.wait(timeout = timelimit)
     except subprocess.TimeoutExpired:
         if final_status == 'Accepted':
             final_status = 'Time Limit Exceeded'
@@ -182,8 +182,9 @@ for i in range(startid, endid + 1):
     t.join(timelimit)
 
     passed = endtime - starttime
+    max_memory = max(max_memory, memory_max)
     print("Time:   {}s".format(passed))
-    print("Memory: {}MB".format(float(memory_max) / (1024 * 1024)))
+    print("Memory: {}MB".format(float(max_memory) / (1024 * 1024)))
 
     if not flag:        
         print('Status: \033[35mTime Limit Exceeded\033[0m')
