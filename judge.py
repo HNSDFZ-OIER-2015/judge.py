@@ -67,7 +67,7 @@ def memory_checker(pid, time_limit):
         try:
             for i in range(0, 5):
                 rss, vms = proc.memory_info()
-                usage = rss + vms
+                usage = rss
                 memory_max = max(memory_max, usage)
 
         except:
