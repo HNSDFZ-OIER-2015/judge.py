@@ -149,7 +149,7 @@ final_status = 'Accepted'
 for i in range(startid, endid + 1):
     print('\n\033[32m# Testcase\033[0m {}'.format(i))
 
-    time.sleep(0.1)
+    # time.sleep(0.1)
     try:
         os.remove('{}.out'.format(name))
     except:
@@ -289,4 +289,7 @@ print('Status: {}{}\033[0m\nScores: {}\nTime:   {}s\nMemory: {}MB'.format(
     float(memory_max) / (1024 ** 2)
     )
 )
+
+os.system("rm *.in")
+os.system("rm *.out")
 
