@@ -33,8 +33,9 @@ def judge():
             status = ACCEPTED
         else:
             status = ERROR
-    except:
+    except Exception as e:
         status = INTERNAL_ERROR
+        message = str(e)
 
 def _judge():
-    raise NotImplementedError("Judge method not implemented.")
+    raise NotImplementedError("Judger not implemented.")
