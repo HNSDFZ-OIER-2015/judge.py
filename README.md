@@ -1,12 +1,12 @@
 # judge.py
 ## Quick Start
-1. Change your current folder to `judge.py`:
+### Change Current Folder
 
 ```
 cd [path to judge.py]
 ```
 
-2. Generate new problem database:
+### Generate New Problem Database
 
 ```
 ./judge.py generate [problem name]
@@ -14,7 +14,7 @@ cd [path to judge.py]
 
 which would make a new folder with a default configuration file if it does not exist.
 
-3. Set up he problem:
+### Setup the Problem
 Firstly, put all your data into the problem folder with format `xxxx.in/out`.
 Then set up configure in `xxxx.json`:
 
@@ -35,7 +35,7 @@ Then set up configure in `xxxx.json`:
 
 NOTICE: If you have enabled `special_judge`, you have to put `_spj.py` into your problem folder, renaming it to `spj.py`. Then `judge.py` will use `spj.py` to judge the score instead of simple diff.
 
-4. Run your solution:
+### Run Your Solution
 Put your solution `xxxx.cpp` into `judge.py`'s folder, then:
 
 ```
@@ -43,7 +43,7 @@ Put your solution `xxxx.cpp` into `judge.py`'s folder, then:
 ```
 will run the judgement.
 
-5. Datagen extensions:
+### Datagen Extension
 If you have the standard program, you can judge it in `datagen` mode:
 
 ```
