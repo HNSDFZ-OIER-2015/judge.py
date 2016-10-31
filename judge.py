@@ -102,6 +102,8 @@ if sys.argv[1] == "generate":
     "compiler": "g++ -O0 -std=c++11",
     "start_id": 1,
     "end_id": 10,
+    "input_suffix": "in",
+    "output_suffix": "out",
     "name_format": "{0}{1}.{2}",
     "time_limit": 1.0,
     "memory_limit": 128.0,
@@ -129,6 +131,8 @@ startid       = document["start_id"]
 endid         = document["end_id"]
 timelimit     = document["time_limit"]
 memlimit      = document["memory_limit"]
+input_suffix  = document["input_suffix"]
+output_suffix = document["output_suffix"]
 formatter     = document["name_format"]
 special_judge = document["special_judge"]
 
@@ -155,7 +159,7 @@ for i in range(startid, endid + 1):
     except:
         pass 
 
-    shutil.copy2('./{0}/{1}'.format(name, formatter.format(name, i, "in")), '{0}.in'.format(name))
+    shutil.copy2('./{0}/{1}'.format(name, formatter.format(name, i, input_suffix)), '{0}.in'.format(name))
 
     # ......
     os.system('pkill -9 {}'.format(build_file))
@@ -212,8 +216,8 @@ for i in range(startid, endid + 1):
                 import spj
 
             spj.init(
-                "./{0}/{1}".format(name, formatter.format(name, i, "in")),
-                "./{0}/{1}".format(name, formatter.format(name, i, "out")),
+                "./{0}/{1}".format(name, formatter.format(name, i, input_suffix)),
+                "./{0}/{1}".format(name, formatter.format(name, i, output_suffix)),
                 "{}.out".format(name)
             )
 
@@ -247,7 +251,7 @@ for i in range(startid, endid + 1):
 
         else:
             succeeded, lineNo, std, mine = diff('./{0}/{1}'.format(
-                name, formatter.format(name, i, "out")),
+                name, formatter.format(name, i, output_suffix)),
                 '{}.out'.format(name)
             )
             if not succeeded:
