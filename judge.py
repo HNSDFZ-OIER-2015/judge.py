@@ -188,7 +188,7 @@ for i in range(startid, endid + 1):
     passed = endtime - starttime
     max_memory = max(max_memory, memory_max)
     print("Time:   {}s".format(passed))
-    print("Memory: {}MB".format(float(max_memory) / (1024 * 1024)))
+    print("Memory: {}MB".format(float(memory_max) / (1024 * 1024)))
 
     if not flag:        
         print('Status: \033[35mTime Limit Exceeded\033[0m')
