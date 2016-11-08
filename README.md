@@ -39,7 +39,7 @@ Then set up configure in `xxxx.json`:
 }
 ```
 
-NOTICE: If you have enabled `special_judge`, you have to put `_spj.py` into your problem folder, renaming it to `spj.py`. Then `judge.py` will use `spj.py` to judge the score instead of simple diff.
+**NOTICE**: If you have enabled `special_judge`, you have to put `_spj.py` into your problem folder, renaming it to `spj.py`. Then `judge.py` will use `spj.py` to judge the score instead of simple diff.
 
 ### Run Your Solution
 Put your solution `xxxx.cpp` into `source` folder, then:
