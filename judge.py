@@ -120,7 +120,7 @@ elif sys.argv[1] == "datagen":
 else:
     setting = sys.argv[1]
 
-with open("./{0}/{0}.json".format(setting)) as setting_file:
+with open("./data/{0}/{0}.json".format(setting)) as setting_file:
     document = json.load(setting_file)
 
 name          = document["name"]
@@ -139,7 +139,7 @@ special_judge = document["special_judge"]
 spj = None
 
 print('(info) Compiling source...')
-status = os.system("{0} {1}{2} -o {3}".format(compiler, name, source_ext, build_file))
+status = os.system("{0} ./source/{1}{2} -o {3}".format(compiler, name, source_ext, build_file))
 
 if status != 0:
     print('\033[36mCompile Error\033[0m')
@@ -159,7 +159,7 @@ for i in range(startid, endid + 1):
     except:
         pass 
 
-    shutil.copy2('./{0}/{1}'.format(name, formatter.format(name, i, input_suffix)), '{0}.in'.format(name))
+    shutil.copy2('./data/{0}/{1}'.format(name, formatter.format(name, i, input_suffix)), '{0}.in'.format(name))
 
     # ......
     os.system('pkill -9 {}'.format(build_file))
@@ -212,12 +212,12 @@ for i in range(startid, endid + 1):
     if flag:
         if special_judge:
             if spj is None:
-                sys.path.append("./{}/".format(name))
+                sys.path.append("./data/{}/".format(name))
                 import spj
 
             spj.init(
-                "./{0}/{1}".format(name, formatter.format(name, i, input_suffix)),
-                "./{0}/{1}".format(name, formatter.format(name, i, output_suffix)),
+                "./data/{0}/{1}".format(name, formatter.format(name, i, input_suffix)),
+                "./data/{0}/{1}".format(name, formatter.format(name, i, output_suffix)),
                 "{}.out".format(name)
             )
 
@@ -250,7 +250,7 @@ for i in range(startid, endid + 1):
                     print("(info) {}".format(spj.message))
 
         else:
-            succeeded, lineNo, std, mine = diff('./{0}/{1}'.format(
+            succeeded, lineNo, std, mine = diff('./data/{0}/{1}'.format(
                 name, formatter.format(name, i, output_suffix)),
                 '{}.out'.format(name)
             )
