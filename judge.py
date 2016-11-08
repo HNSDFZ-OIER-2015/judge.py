@@ -91,10 +91,10 @@ if sys.argv[1] == "generate":
 
     name = sys.argv[2]
     try:
-        os.mkdir(name)
+        os.mkdir("./data/{}".format(name))
     except:
         pass
-    config = open("{0}/{0}.json".format(name), "w")
+    config = open("./data/{0}/{0}.json".format(name), "w")
     content = '''{
     "name": "%s",
     "source_ext": ".cpp",
