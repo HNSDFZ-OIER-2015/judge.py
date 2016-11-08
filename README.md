@@ -22,7 +22,7 @@ which would make a new folder with a default configuration file if it does not e
 Firstly, put all your data into the problem folder with format `xxxx.in/out`.
 Then set up configure in `xxxx.json`:
 
-```
+```json
 {
     "name": "xxxx",  // Problem name
     "source_ext": ".cpp",  // Source extension
