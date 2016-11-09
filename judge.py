@@ -139,7 +139,13 @@ special_judge = document["special_judge"]
 spj = None
 
 print('(info) Compiling source...')
-status = os.system("{0} ./source/{1}{2} -o {3}".format(compiler, name, source_ext, build_file))
+
+if source_ext == ".pas":
+    print("(warn) Enabled Pascal support")
+    status = os.system("{0} ./source/{1}{2}".format(compiler, name, source_ext))
+    os.system("mv {0} {1}".format("./source/{}".format(name), "./{}".format(build_file)))
+else:
+    status = os.system("{0} ./source/{1}{2} -o {3}".format(compiler, name, source_ext, build_file))
 
 if status != 0:
     print('\033[36mCompile Error\033[0m')

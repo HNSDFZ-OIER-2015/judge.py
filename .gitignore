@@ -12,6 +12,8 @@ __pycache__/*
 *.cpp
 *.c
 *.cxx
+*.pas
+*.o
 
 # Problems
 data/*/

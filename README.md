@@ -59,3 +59,7 @@ If you have the standard program, you can judge it in `datagen` mode:
 
 Then all the output of the program will be put into the problem folder as `out` files.
 
+### Pascal Support
+Since the compiler of Pascal language is a little different from C-family compilers, so `judge.py` has a special compiliation process for pascal.
+
+If you want to write your solution in this language, just modify the `source_ext` to `.pas`, `judge.py` will do it for you.
