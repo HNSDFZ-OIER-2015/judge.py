@@ -11,6 +11,8 @@ import readline
 import threading
 from subprocess import *
 
+MAX_DISPLAY = 256
+
 is_datagen = False
 
 def diff(file1, file2):
@@ -266,7 +268,14 @@ for i in range(startid, endid + 1):
                 if lineNo == 0:
                     print('(info) {}'.format(std))
                 else:
-                    print('(info) At line {0}:\n\texpected: {1}\n\tbut read: {2}'.format(lineNo, std, mine))
+                    if len(std) > MAX_DISPLAY:
+                        std = std[:MAX_DISPLAY] + "..."
+                    if len(mine) > MAX_DISPLAY:
+                        mine = mine[:MAX_DISPLAY] + "..."
+
+                    print('(info) At line {0}:\n\texpected: {1}\n\tbut read: {2}'.format(
+                        lineNo, std, mine
+                    ))
 
                 if final_status == 'Accepted':
                     final_status = 'Wrong Answer'
