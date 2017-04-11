@@ -101,7 +101,7 @@ if sys.argv[1] == "generate":
     "name": "%s",
     "source_ext": ".cpp",
     "build_file": "a.out",
-    "compiler": "g++ -O0 -std=c++11",
+    "compiler": "g++ -O0 -std=c++11 -DUSE_FILE_IO",
     "start_id": 1,
     "end_id": 10,
     "input_suffix": "in",
