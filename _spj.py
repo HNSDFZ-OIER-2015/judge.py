@@ -13,15 +13,18 @@ message = ""
 input_file = ""
 std_output = ""
 user_output = ""
+cwd = ""
 
-def init(_input_file, _std_output, _user_output):
+def init(_input_file, _std_output, _user_output, _cwd):
     global input_file
     global std_output
     global user_output
+    global cwd
 
     input_file = _input_file
     std_output = _std_output
     user_output = _user_output
+    cwd = _cwd
 
 def judge():
     global status

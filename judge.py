@@ -226,7 +226,8 @@ for i in range(startid, endid + 1):
             spj.init(
                 "./data/{0}/{1}".format(name, formatter.format(name, i, input_suffix)),
                 "./data/{0}/{1}".format(name, formatter.format(name, i, output_suffix)),
-                "{}.out".format(name)
+                "{}.out".format(name),
+                "./data/{0}/".format(name)
             )
 
             spj.judge()
