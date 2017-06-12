@@ -24,18 +24,18 @@ Then set up configure in `xxxx.json`:
 
 ```c
 {
-    "name": "xxxx",  // Problem name
-    "source_ext": ".cpp",  // Source extension
-    "build_file": "a.out",  // Compiler output file (executable)
+    "name": "xxxx",                    // Problem name
+    "source_ext": ".cpp",              // Source extension
+    "build_file": "a.out",             // Compiler output file (executable)
     "compiler": "g++ -O0 -std=c++11",  // Compile command line
-    "start_id": 1,  // Start at xxxx1.in/out
-    "end_id": 10,  // End at xxxx10.in/out
-    "input_suffix": "in",  // Input file extension
-    "output_suffix": "out",  // Output file extension
-    "name_format": "{0}{1}.{2}",  // Formatting: 0: name, 1: id, 2:in/out
-    "time_limit": 1.0,  // Time limit in seconds
-    "memory_limit": 128.0,  // Memory limit in MBs
-    "special_judge": false  // Special judge
+    "start_id": 1,                     // Start at xxxx1.in/out
+    "end_id": 10,                      // End at xxxx10.in/out
+    "input_suffix": "in",              // Input file extension
+    "output_suffix": "out",            // Output file extension
+    "name_format": "{0}{1}.{2}",       // Formatting: 0: name, 1: id, 2:in/out
+    "time_limit": 1.0,                 // Time limit in seconds
+    "memory_limit": 128.0,             // Memory limit in MBs
+    "special_judge": false             // Special judge?
 }
 ```
 

@@ -11,6 +11,8 @@ import readline
 import threading
 from subprocess import *
 
+MAX_DISPLAY = 256
+
 is_datagen = False
 
 def diff(file1, file2):
@@ -99,7 +101,7 @@ if sys.argv[1] == "generate":
     "name": "%s",
     "source_ext": ".cpp",
     "build_file": "a.out",
-    "compiler": "g++ -O0 -std=c++11",
+    "compiler": "g++ -O0 -std=c++11 -DUSE_FILE_IO",
     "start_id": 1,
     "end_id": 10,
     "input_suffix": "in",
@@ -224,7 +226,8 @@ for i in range(startid, endid + 1):
             spj.init(
                 "./data/{0}/{1}".format(name, formatter.format(name, i, input_suffix)),
                 "./data/{0}/{1}".format(name, formatter.format(name, i, output_suffix)),
-                "{}.out".format(name)
+                "{}.out".format(name),
+                "./data/{0}/".format(name)
             )
 
             spj.judge()
@@ -266,7 +269,14 @@ for i in range(startid, endid + 1):
                 if lineNo == 0:
                     print('(info) {}'.format(std))
                 else:
-                    print('(info) At line {0}:\n\texpected: {1}\n\tbut read: {2}'.format(lineNo, std, mine))
+                    if len(std) > MAX_DISPLAY:
+                        std = std[:MAX_DISPLAY] + "..."
+                    if len(mine) > MAX_DISPLAY:
+                        mine = mine[:MAX_DISPLAY] + "..."
+
+                    print('(info) At line {0}:\n\texpected: {1}\n\tbut read: {2}'.format(
+                        lineNo, std, mine
+                    ))
 
                 if final_status == 'Accepted':
                     final_status = 'Wrong Answer'
